@@ -26,6 +26,7 @@ class UserController extends Controller
         }
     }
 
+
     public function index()
     {
         $users = User::list();
@@ -34,6 +35,8 @@ class UserController extends Controller
             'data' => $users,
         ]);
     }
+
+
     public function update(Request $request, string $id)
     {
         User::edit($request, $id);

@@ -27,6 +27,7 @@ Route::post('/password/reset', [AuthController::class, 'resetPassword']);
 //Profile 
 Route::get('/me', [AuthController::class, 'index'])->middleware('auth:sanctum');
 Route::put('/me/{id}', [UserController::class, 'update']);
+Route::post('/upload/{id}', [UserController::class, 'uploadProfilePicture']);
 
 //User
 Route::get('/users', [UserController::class, 'index']);

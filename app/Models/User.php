@@ -61,6 +61,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function media()
+    {
+        return $this->belongsTo(Media::class);
+    }
     public static function list()
     {
         return self::all();

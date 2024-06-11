@@ -4,10 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\ResetPassword;
+use App\Http\Resources\ProfileViewResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * @OA\Info(title="My API", version="1.0")
@@ -78,15 +85,20 @@ class AuthController extends Controller
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
-        $user = $request->user();
-        $user->getAllPermissions();
-        $user->getRoleNames();
-        return response()->json([
-            'message' => 'Login success',
-            'data' => $user,
-        ]);
+        // Check if the user is authenticated
+        if (Auth::check()) {
+            $user = $request->user();
+            $user = new ProfileViewResource($user);
+            return response()->json([
+                'message' => 'Login success',
+                'data' => [$user],
+            ]);
+        } else {
+            // If not authenticated, return an error response
+            return response()->json(['error' => 'User not found'], 404);
+        }
     }
     /**
      * @OA\Post(
@@ -150,5 +162,47 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Logout successful'
         ]);
+    }
+
+    // Controller method for initiating password reset
+    public function sendEmailVerify(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+        // Check if the email exists in the users table
+        $user = DB::table('users')->where('email', $request->email)->first();
+        if ($user) {
+            $passcode = Str::random(6);
+            DB::table('reset_passwords')->insert([
+                'email' => $request->email,
+                'passcode' => $passcode,
+            ]);
+        }
+        return $user
+            ? response()->json(['Passcode for verify' => $passcode], 201)
+            : response()->json(['Message' => "Email not found"], 404);
+    }
+
+    public function resetPassword(ResetPassword $request)
+    {
+
+        // Find the record in password_resets table based on email and passcode
+        $resetData = DB::table('reset_passwords')
+            ->where('passcode', $request->passcode)
+            ->first();
+
+        if (!$resetData) {
+            return response()->json(['error' => 'Invalid passcode'], 422);
+        }
+        $user = User::where('email', $resetData->email)->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+        $user->password = Hash::make($request->password);
+        $user->save();
+        DB::table('reset_passwords')->where('passcode', $request->passcode)->delete();
+        return response()->json(['message' => 'Password reset successfully']);
     }
 }

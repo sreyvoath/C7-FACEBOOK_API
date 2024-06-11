@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProfileRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Media;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,7 +17,6 @@ class UserController extends Controller
     {
         // Check if the user is authenticated
         if (Auth::check()) {
-            // If authenticated, return the user data
             return response()->json([
                 'message' => 'Login success',
                 'data' => $request->user(),
@@ -26,7 +27,6 @@ class UserController extends Controller
         }
     }
 
-
     public function index()
     {
         $users = User::list();
@@ -36,10 +36,25 @@ class UserController extends Controller
         ]);
     }
 
-
     public function update(Request $request, string $id)
     {
         User::edit($request, $id);
         return ["success" => true, "Message" => "Profile user updated successfully"];
+    }
+
+    public function uploadProfilePicture(ProfileRequest $request, $id)
+    {
+        $user = User::findOrFail($id);
+        // Store the uploaded file
+        if ($request->file('profile_image')->isValid()) {
+            $media = Media::store($request);
+            $mediaId = $media->id;
+
+            $user->media_id = $mediaId;
+            $user->save();
+            return response()->json(['message' => 'Profile picture uploaded successfully']);
+        }
+
+        return response()->json(['error' => 'Failed to upload profile picture'], 500);
     }
 }

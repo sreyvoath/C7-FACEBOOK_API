@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
@@ -42,9 +43,13 @@ Route::post('/post/update/{id}', [PostController::class, 'update'])->middleware(
 Route::delete('/post/delete/{id}', [PostController::class, 'destroy'])->middleware('auth:sanctum');
 
 //Like
-Route::post('/like', [LikeController::class, 'like'])->middleware('auth:sanctum');
-Route::post('/unlike', [LikeController::class, 'store'])->middleware('auth:sanctum');
+Route::post('/like', [LikeController::class, 'create'])->middleware('auth:sanctum');
+Route::get('/like', [LikeController::class, 'list'])->middleware('auth:sanctum');
+
+//Comment
+Route::post('/comment', [CommentController::class, 'create'])->middleware('auth:sanctum');
+Route::get('/comment', [CommentController::class, 'list'])->middleware('auth:sanctum');
+Route::delete('/comment/{id}', [CommentController::class, 'destroy'])->middleware('auth:sanctum');
 
 //Friendship
-
 

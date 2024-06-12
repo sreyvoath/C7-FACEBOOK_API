@@ -14,6 +14,10 @@ class LikeResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'user_react' => $this->user->name,
+            'react_type' => $this->react_type,
+            'created_at' => $this->created_at->format('d-m-Y'),
+        ];
     }
 }

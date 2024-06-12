@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Auth;
 
 class LikeController extends Controller
 {
-    public function like(LikeRequest $request): JsonResponse
+    
+    public function create(LikeRequest $request): JsonResponse
     {
         // Check if the user is authenticated
         if (Auth::check()) {
@@ -40,5 +41,13 @@ class LikeController extends Controller
             // If not authenticated, return an error response
             return response()->json(['error' => 'User not authenticated'], 401);
         }
+    }
+    public function list(Request $request){
+        $user = $request->user();
+        $likes = Like::where('user_id', $user->id)->get();
+        return response()->json([
+           'success' => true,
+            'data' => $likes,
+        ]);
     }
 }

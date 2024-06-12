@@ -4,15 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CommentRequest extends FormRequest
+class CommentRequest extends DefaultRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return false;
-    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -21,8 +14,10 @@ class CommentRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
+        $rules =[
+            'post_id' => 'required|exists:posts,id', // Check if the post_id exists in the posts table
+            'content' => 'required|string', 
         ];
+        return $rules;
     }
 }

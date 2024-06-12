@@ -18,9 +18,12 @@ class PostResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
+            'likes' => LikeResource::collection($this->likes),
+            'comments' => CommentResource::collection($this->comments),
             'created_at' => $this->created_at->format('d-m-Y'),
             'updated_at' => $this->updated_at->format('d-m-Y'),
-            'user' => new UserResource($this->user)
+            'user_post' => new UserResource($this->user),
+            
         ];
     }
 }

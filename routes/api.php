@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -40,10 +41,9 @@ Route::post('/post/show/{id}', [PostController::class, 'show'])->middleware('aut
 Route::post('/post/update/{id}', [PostController::class, 'update'])->middleware('auth:sanctum');
 Route::delete('/post/delete/{id}', [PostController::class, 'destroy'])->middleware('auth:sanctum');
 
-//Media
-//Comment
-
 //Like
+Route::post('/like', [LikeController::class, 'like'])->middleware('auth:sanctum');
+Route::post('/unlike', [LikeController::class, 'store'])->middleware('auth:sanctum');
 
 //Friendship
 

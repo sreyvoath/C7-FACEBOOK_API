@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +33,13 @@ Route::post('/upload/{id}', [UserController::class, 'uploadProfilePicture']);
 //User
 Route::get('/users', [UserController::class, 'index']);
 
+//Post 
+Route::get('/posts', [PostController::class, 'index']);
+Route::post('/post', [PostController::class, 'store']);
+Route::put('/posts/{id}', [PostController::class, 'update']);
+Route::delete('/posts/{id}', [PostController::class, 'destroy']);
+
+//Media
 //Comment
 
 //Like

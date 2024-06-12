@@ -34,10 +34,11 @@ Route::post('/upload/{id}', [UserController::class, 'uploadProfilePicture']);
 Route::get('/users', [UserController::class, 'index']);
 
 //Post 
-Route::get('/posts', [PostController::class, 'index']);
-Route::post('/post', [PostController::class, 'store']);
-Route::put('/posts/{id}', [PostController::class, 'update']);
-Route::delete('/posts/{id}', [PostController::class, 'destroy']);
+Route::post('/posts', [PostController::class, 'index'])->middleware('auth:sanctum');
+Route::post('/post/create', [PostController::class, 'store'])->middleware('auth:sanctum');
+Route::post('/post/show/{id}', [PostController::class, 'show'])->middleware('auth:sanctum');
+Route::post('/post/update/{id}', [PostController::class, 'update'])->middleware('auth:sanctum');
+Route::delete('/post/delete/{id}', [PostController::class, 'destroy'])->middleware('auth:sanctum');
 
 //Media
 //Comment

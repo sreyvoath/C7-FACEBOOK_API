@@ -6,17 +6,30 @@ use App\Http\Resources\PostResource;
 use App\Http\Resources\ShowPostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::list();
-        $posts = PostResource::collection($posts);
-        return response()->json(['success' => true, 'data' =>$posts], 201);
+        if (Auth::check()) {
+            $user = $request->user();
+
+            // Retrieve posts for the authenticated user
+            $posts = Post::where('user_id', $user->id)->get();
+
+            // Optionally, use a resource to format the posts
+            $posts = PostResource::collection($posts);
+            return response()->json([
+                'success' => true,
+                'data' => $posts,
+            ], 200);
+        } else {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
     }
 
     /**
@@ -24,19 +37,36 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        Post::store($request);
-        return response()->json(['success' => true, 'message'=>"Post created succesfully"], 201);
+        if (Auth::check()) {
+            $user = $request->user();
+            Post::store($request, null, $user->id);
+            return response()->json(['success' => true, 'message' => "Post created succesfully"], 201);
+        } else {
+            return response()->json(['error' => 'User not stay in login'], 401);
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
-        $post = Post::find($id);
-        $post = new ShowPostResource($post);
-        return response()->json(['success' => true, 'data' => $post], 200);
+        if (Auth::check()) {
+            $user = $request->user();
 
+            // Retrieve posts for the authenticated user
+            $posts = Post::where('user_id', $user->id)->get();
+
+            $post = $posts->find($id);
+            if ($post) {
+                $post = new ShowPostResource($post);
+                return response()->json(['success' => true, 'data' => $post,], 200);
+            } else {
+                return response()->json(['error' => 'Post not found'], 404);
+            }
+        } else {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
     }
 
     /**
@@ -44,21 +74,37 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        Post::store($request, $id);
-        return response()->json(['success' => true, 'message'=>"Post updated succesfully"], 201);
+        if (Auth::check()) {
+            $user = $request->user();
+            $post = Post::where('id', $id)->where('user_id', $user->id)->first();
+
+            if ($post) {
+                Post::store($request, $id, $user->id);
+                return response()->json(['success' => true, 'message' => "Post updated successfully"], 200);
+            } else {
+                return response()->json(['error' => 'Post not found'], 404);
+            }
+        } else {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
-        $post = Post::find($id);
-        $post->delete();
-        return response()->json([
-            'success' => true,
-            'data' => true,
-            'message' => 'post deleted successfully'
-        ], 200);
+        if (Auth::check()) {
+            $user = $request->user();
+            $post = Post::where('id', $id)->where('user_id', $user->id)->first();
+            if ($post) {
+                $post->delete();
+                return response()->json(['success' => true, 'data' => true, 'message' => 'post deleted successfully'], 200);
+            } else {
+                return response()->json(['error' => 'Post not found'], 404);
+            }
+        } else {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
     }
 }

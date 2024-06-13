@@ -13,29 +13,15 @@ use Illuminate\Support\Facades\Auth;
 
 class FriendRequestController extends Controller
 {
+
     public function sendRequest(FriendSendRequest $request)
     {
-        $receiverId = $request->input('receiver_id');
-
         if (Auth::check()) {
-            $senderId = Auth::id();
-
-            // Check if a friend request already exists
-            $existingRequest = FriendRequest::where('sender_id', $senderId)
-                ->where('receiver_id', $receiverId)
-                ->first();
-
+            $existingRequest = FriendRequest::existingRequest($request);
             if ($existingRequest) {
                 return response()->json(['error' => 'Friend request already sent'], 400);
             }
-
-            // Create a new friend request
-            FriendRequest::create([
-                'sender_id' => $senderId,
-                'receiver_id' => $receiverId,
-                'status' => 'pending',
-            ]);
-
+            FriendRequest::store($request);
             return response()->json(['success' => true, 'message' => 'Friend request sent successfully']);
         }
         return response()->json(['error' => 'User not authenticated'], 401);
@@ -44,58 +30,40 @@ class FriendRequestController extends Controller
     public function acceptRequest(Request $request)
     {
         if (Auth::check()) {
-            $userId = Auth::id();
-            $friendRequestId = $request->input('friend_request_id');
-
-            $friendRequest = FriendRequest::where('sender_id', $friendRequestId)
-                ->where('receiver_id', $userId)
-                ->first();
-
+            $friendRequest = FriendRequest::acceptRequest($request);
             if ($friendRequest) {
                 $friendRequest->update(['status' => 'accepted']);
-
                 return response()->json(['success' => true, 'message' => 'Friend request accepted successfully']);
             }
-
             return response()->json(['error' => 'Friend request not found'], 404);
         }
-
         return response()->json(['error' => 'User not authenticated'], 401);
     }
 
     public function rejectRequest(Request $request)
     {
         if (Auth::check()) {
-            $userId = Auth::id();
-            $friendRequestId = $request->input('friend_request_id');
-            $friendRequest = FriendRequest::where('sender_id', $friendRequestId)
-                ->where('receiver_id', $userId)
-                ->first();
-
+           
+            $friendRequest = FriendRequest::rejectRequest($request);
             if ($friendRequest) {
                 $friendRequest->delete();
-
                 return response()->json(['success' => true, 'message' => 'Friend request rejected successfully']);
             }
-
             return response()->json(['error' => 'Friend request not found'], 404);
         }
-
         return response()->json(['error' => 'User not authenticated'], 401);
     }
+
     public function getPendingRequests(): JsonResponse
     {
         if (Auth::check()) {
-            $userId = Auth::id();
-            $pendingRequests = FriendRequest::where('receiver_id', $userId)
-                ->where('status', 'pending')
-                ->get();
+            $pendingRequests = FriendRequest::getPending();
             $friendReqesut = FriendResource::collection($pendingRequests);
             return response()->json(['success' => true, 'data' => $friendReqesut]);
         }
-
         return response()->json(['error' => 'User not authenticated'], 401);
     }
+
     public function getFriends(): JsonResponse
     {
         if (Auth::check()) {
@@ -103,36 +71,19 @@ class FriendRequestController extends Controller
             $friends = FriendRequest::get($user->id, null);
             return response()->json(['success' => true, 'data' => FriendResource::collection($friends)]);
         }
-
         return response()->json(['error' => 'User not authenticated'], 401);
     }
+
     public function removeFriend(Request $request): JsonResponse
     {
         if (Auth::check()) {
-            $user = Auth::user();
-            $friendId = $request->input('friend_id');
-
-            // Find the friend request where the authenticated user is the sender or receiver
-            $friendRequest = FriendRequest::where(function ($query) use ($user, $friendId) {
-                $query->where('sender_id', $user->id)
-                    ->where('receiver_id', $friendId)
-                    ->where('status', 'accepted');
-            })->orWhere(function ($query) use ($user, $friendId) {
-                $query->where('sender_id', $friendId)
-                    ->where('receiver_id', $user->id)
-                    ->where('status', 'accepted');
-            })->first();
-
+            $friendRequest = FriendRequest::remove($request);
             if ($friendRequest) {
-                // Delete the friend request
                 $friendRequest->delete();
-
                 return response()->json(['success' => true, 'message' => 'Friend removed successfully']);
             }
-
             return response()->json(['error' => 'Friend not found'], 404);
         }
-
         return response()->json(['error' => 'User not authenticated'], 401);
     }
 }

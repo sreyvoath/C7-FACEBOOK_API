@@ -14,10 +14,11 @@ class FriendResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $relationName = $this->status === 'accepted' ? 'friends' : 'sender';
         return [
             'id' => $this->id,
             'status' => $this->status,
-            'sender' => new UserResource($this->sender),
+            $relationName => new UserResource($this->sender),
             'created_at' => $this->created_at->format('d-m-Y H:i:s'),
             'updated_at' => $this->updated_at->format('d-m-Y H:i:s'),
         ];

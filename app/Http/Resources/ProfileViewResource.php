@@ -24,6 +24,7 @@ class ProfileViewResource extends JsonResource
             'profile_image' => $this->media ? Storage::url($this->media->profile_image) : "There is no image uplaod yet",
             'created_at' => $this->created_at->format('d-m-Y'),
             'updated_at' => $this->updated_at->format('d-m-Y'),
+            // 'friends' => $this->friends??[],
             'permissions' => $permissions,
             'roles' => $roles,
         ];

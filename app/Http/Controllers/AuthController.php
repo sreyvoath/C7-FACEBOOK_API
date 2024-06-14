@@ -165,6 +165,43 @@ class AuthController extends Controller
     }
 
     // Controller method for initiating password reset
+
+    /**
+ * @OA\Post(
+ *     path="/api/password/email",
+ *     tags={"Authentication"},
+ *     summary="Send Email Verification Code",
+ *     description="Sends a verification code to the user's email if the email exists in the database.",
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"email"},
+ *             @OA\Property(property="email", type="string", format="email", example="user@example.com")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="Passcode for verify",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="Passcode for verify", type="string", example="ABC123")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Email not found",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="Message", type="string", example="Email not found")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Invalid input",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="The email field is required.")
+ *         )
+ *     )
+ * )
+ */
     public function sendEmailVerify(Request $request)
     {
         $request->validate([
@@ -184,6 +221,33 @@ class AuthController extends Controller
             : response()->json(['Message' => "Email not found"], 404);
     }
 
+/**
+ * @OA\Post(
+ *     path="/api/password/reset",
+ *     tags={"Authentication"},
+ *     summary="Reset password",
+ *     description="Reset password",
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"passcode", "password"},
+ *             @OA\Property(property="passcode", type="string", example="123456"),
+ *             @OA\Property(property="password", type="string", format="password", example="new_password")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Password reset successful",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="success", type="boolean", example=true),
+ *             @OA\Property(property="message", type="string", example="Password reset successfully")
+ *         )
+ *     ),
+ *     @OA\Response(response=400, description="Invalid input"),
+ *     @OA\Response(response=401, description="Unauthorized"),
+ *     @OA\Response(response=404, description="User not found")
+ * )
+ */
     public function resetPassword(ResetPassword $request)
     {
 

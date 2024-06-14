@@ -34,6 +34,10 @@ Route::post('/upload/{id}', [UserController::class, 'uploadProfilePicture']);
 
 //User
 Route::get('/users', [UserController::class, 'index']);
+// Route::get('/users/{id}', [UserController::class, 'show']);
+// Route::post('/users/create', [UserController::class, 'store']);
+// Route::put('/users/update{id}', [UserController::class, 'update']);
+// Route::delete('/users/delete{id}', [UserController::class, 'destroy']);
 
 //Post 
 Route::post('/posts', [PostController::class, 'index'])->middleware('auth:sanctum');

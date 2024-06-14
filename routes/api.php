@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FriendController;
+use App\Http\Controllers\FriendRequestController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
@@ -35,21 +37,29 @@ Route::post('/upload/{id}', [UserController::class, 'uploadProfilePicture']);
 //User
 Route::get('/users', [UserController::class, 'index']);
 
-//Post 
-Route::post('/posts', [PostController::class, 'index'])->middleware('auth:sanctum');
-Route::post('/post/create', [PostController::class, 'store'])->middleware('auth:sanctum');
-Route::post('/post/show/{id}', [PostController::class, 'show'])->middleware('auth:sanctum');
-Route::post('/post/update/{id}', [PostController::class, 'update'])->middleware('auth:sanctum');
-Route::delete('/post/delete/{id}', [PostController::class, 'destroy'])->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->group(function () {
 
-//Like
-Route::post('/like', [LikeController::class, 'create'])->middleware('auth:sanctum');
-Route::get('/like', [LikeController::class, 'list'])->middleware('auth:sanctum');
+    //Post 
+    Route::post('/posts', [PostController::class, 'index']);
+    Route::post('/post/create', [PostController::class, 'store']);
+    Route::post('/post/show/{id}', [PostController::class, 'show']);
+    Route::post('/post/update/{id}', [PostController::class, 'update']);
+    Route::delete('/post/delete/{id}', [PostController::class, 'destroy']);
 
-//Comment
-Route::post('/comment', [CommentController::class, 'create'])->middleware('auth:sanctum');
-Route::get('/comment', [CommentController::class, 'list'])->middleware('auth:sanctum');
-Route::delete('/comment/{id}', [CommentController::class, 'destroy'])->middleware('auth:sanctum');
+    //Like
+    Route::post('/like', [LikeController::class, 'create']);
+    Route::get('/like', [LikeController::class, 'list']);
 
-//Friendship
+    //Comment
+    Route::post('/comment', [CommentController::class, 'create']);
+    Route::get('/comment', [CommentController::class, 'list']);
+    Route::delete('/comment/{id}', [CommentController::class, 'destroy']);
 
+    //Friendship
+    Route::post('/friend-request', [FriendRequestController::class, 'sendRequest']);
+    Route::post('/friend-request/accept', [FriendRequestController::class, 'acceptRequest']);
+    Route::post('/friend-request/reject', [FriendRequestController::class, 'rejectRequest']);
+    Route::get('/friend-requests/received/pending', [FriendRequestController::class, 'getPendingRequests']);
+    Route::get('/friends', [FriendRequestController::class, 'getFriends']);
+    Route::delete('/friend/remove', [FriendRequestController::class, 'removeFriend']);
+});

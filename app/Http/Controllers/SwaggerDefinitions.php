@@ -14,6 +14,8 @@ namespace App\Http\Controllers;
  *     @OA\Property(property="updated_at", type="string", format="date-time", example="2021-01-01T00:00:00.000000Z")
  * )
  */
+
+
 class SwaggerDefinitions
 {
     // This class is used only for Swagger definitions.

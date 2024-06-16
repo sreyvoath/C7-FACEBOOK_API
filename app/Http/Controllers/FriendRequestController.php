@@ -26,7 +26,7 @@ class FriendRequestController extends Controller
 {
     /** 
      * @OA\Post(
-     *     path="/friend-request",
+     *     path="/api/friend-request",
      *     summary="Send friend request",
      *     description="Send a friend request to another user",
      *     tags={"friend-requests"},
@@ -76,7 +76,7 @@ class FriendRequestController extends Controller
     }
 /**
      * @OA\Post(
-     *     path="/friend-request/accept",
+     *     path="/api/friend-request/accept",
      *     summary="Accept friend request",
      *     description="Accept a friend request",
      *     tags={"friend-requests"},
@@ -127,7 +127,7 @@ class FriendRequestController extends Controller
 
     /** 
      * @OA\Post(
-     *     path="/friend-request/reject",
+     *     path="/api/friend-request/reject",
      *     summary="Reject friend request",
      *     description="Reject a friend request",
      *     tags={"friend-requests"},
@@ -179,7 +179,7 @@ class FriendRequestController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/friend-requests/pending",
+     *     path="/api/friend-requests/pending",
      *     summary="Get pending friend requests",
      *     description="Get a list of pending friend requests for the authenticated user",
      *     tags={"friend-requests"},
@@ -214,7 +214,7 @@ class FriendRequestController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/friends",
+     *     path="/api/friends",
      *     summary="Get friends",
      *     description="Get a list of friends for the authenticated user",
      *     tags={"friend-requests"},
@@ -248,7 +248,7 @@ class FriendRequestController extends Controller
     }
     /**
      * @OA\Delete(
-     *     path="/friend/remove",
+     *     path="/api/friend/remove",
      *     summary="Remove friend",
      *     description="Remove a friend from the friend request list",
      *     tags={"friends"},

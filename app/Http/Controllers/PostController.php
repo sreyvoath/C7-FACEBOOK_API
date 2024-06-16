@@ -25,7 +25,7 @@ class PostController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/posts",
+     *     path="/api/posts",
      *     summary="List posts",
      *     description="Get list of posts",
      *     tags={"Posts"},
@@ -68,7 +68,7 @@ class PostController extends Controller
     }
     /**
      * @OA\Post(
-     *     path="/post/create",
+     *     path="/api/post/create",
      *     summary="Create a new post",
      *     tags={"Posts"},
      *     security={{"bearerAuth": {}}},
@@ -106,7 +106,7 @@ class PostController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/post/show/{id}",
+     *     path="/api/post/show/{id}",
      *     summary="Show a post",
      *     description="Show a specific post by ID",
      *     tags={"Posts"},
@@ -158,7 +158,7 @@ class PostController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/post/update/{id}",
+     *     path="/api/post/update/{id}",
      *     summary="Update a post",
      *     description="Update a post",
      *     tags={"Posts"},
@@ -213,7 +213,7 @@ class PostController extends Controller
     }
     /**
      * @OA\Delete(
-     *     path="/post/delete/{id}",
+     *     path="/api/post/delete/{id}",
      *     summary="Delete a post",
      *     description="Delete a specific post by its ID.",
      *     tags={"Posts"},

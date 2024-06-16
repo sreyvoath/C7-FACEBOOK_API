@@ -1054,14 +1054,14 @@
                 ]
             }
         },
-        "/posts": {
+        "/api/posts": {
             "get": {
                 "tags": [
                     "Posts"
                 ],
                 "summary": "List posts",
                 "description": "Get list of posts",
-                "operationId": "5f292ed47bdbfa79356750be0807450c",
+                "operationId": "e9eaf7df702a94f4443677bd1a36cfe6",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -1096,13 +1096,13 @@
                 ]
             }
         },
-        "/post/create": {
+        "/api/post/create": {
             "post": {
                 "tags": [
                     "Posts"
                 ],
                 "summary": "Create a new post",
-                "operationId": "99ac18525eda9ec469e45236535ae5c1",
+                "operationId": "83ca41b942028bde6d7abc0d3c6e3bef",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1155,14 +1155,14 @@
                 ]
             }
         },
-        "/post/show/{id}": {
+        "/api/post/show/{id}": {
             "get": {
                 "tags": [
                     "Posts"
                 ],
                 "summary": "Show a post",
                 "description": "Show a specific post by ID",
-                "operationId": "a92170d71c5fe574561c6c5bb10edfe5",
+                "operationId": "c852befc8cb683e41ff9f7799ea2112d",
                 "parameters": [
                     {
                         "name": "id",

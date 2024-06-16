@@ -36,17 +36,13 @@ Route::post('/upload/{id}', [UserController::class, 'uploadProfilePicture']);
 
 //User
 Route::get('/users', [UserController::class, 'index']);
-// Route::get('/users/{id}', [UserController::class, 'show']);
-// Route::post('/users/create', [UserController::class, 'store']);
-// Route::put('/users/update{id}', [UserController::class, 'update']);
-// Route::delete('/users/delete{id}', [UserController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
     //Post 
-    Route::post('/posts', [PostController::class, 'index']);
+    Route::get('/posts', [PostController::class, 'index']);
     Route::post('/post/create', [PostController::class, 'store']);
-    Route::post('/post/show/{id}', [PostController::class, 'show']);
+    Route::get('/post/show/{id}', [PostController::class, 'show']);
     Route::post('/post/update/{id}', [PostController::class, 'update']);
     Route::delete('/post/delete/{id}', [PostController::class, 'destroy']);
 
